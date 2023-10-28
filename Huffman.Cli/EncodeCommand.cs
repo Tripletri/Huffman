@@ -19,10 +19,10 @@ internal sealed class EncodeCommand : Command<EncodeCommand.Settings>
 
         AnsiConsole.WriteLine("Building tree...");
         var tree = HuffmanCoding.BuildTree(text);
-        
+
         AnsiConsole.WriteLine("Building codes...");
         var codes = HuffmanCoding.BuildCodes(tree);
-        
+
         AnsiConsole.WriteLine("Encoding...");
         var encoded = HuffmanCoding.Encode(text, codes);
 
@@ -44,18 +44,15 @@ internal sealed class EncodeCommand : Command<EncodeCommand.Settings>
 
     private static void WriteInfo(FileInfo input, FileInfo output)
     {
-        var table = new Table
-        {
-            Expand = false
-        };
+        var chart = new BarChart()
+            .Label("[underline]Size in bytes[/]")
+            .AddItem("Input", input.Length)
+            .AddItem("Output", output.Length);
 
-        table.AddColumns("", "Input", "Output");
-        table.AddRow(new Text("File"), new Text(input.Name), new Text(output.Name));
-        table.AddRow("Size (bytes)", input.Length.ToString(), output.Length.ToString());
-        AnsiConsole.Write(table);
+        AnsiConsole.Write(chart);
 
         var ratio = (float)input.Length / output.Length;
-        AnsiConsole.Markup($"[bold]Compression ratio: {ratio:F4} ({ratio * 100:0.##\\%})[/]");
+        AnsiConsole.Markup($"Compression ratio: {ratio:F4} ({ratio * 100:0.##\\%})");
     }
 
     internal sealed class Settings : CommandSettings
