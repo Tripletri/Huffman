@@ -57,37 +57,37 @@ public static class HuffmanCoding
         return queue;
     }
 
-    public static IReadOnlyDictionary<char, BitArray> BuildCodes(Node root)
+    public static IReadOnlyDictionary<char, bool[]> BuildCodes(Node root)
     {
-        var codes = new Dictionary<char, BitArray>();
+        var codes = new Dictionary<char, bool[]>();
         BuildCodesInternal(root, ImmutableList<bool>.Empty, codes);
         return codes;
     }
 
-    private static void BuildCodesInternal(Node? node, ImmutableList<bool> code, IDictionary<char, BitArray> codes)
+    private static void BuildCodesInternal(Node? node, ImmutableList<bool> code, IDictionary<char, bool[]> codes)
     {
         if (node == null)
             return;
 
         if (node.Left == null && node.Right == null)
         {
-            codes.Add(node.Name.ToCharArray()[0], new BitArray(code.ToArray()));
+            codes.Add(node.Name.ToCharArray()[0], code.ToArray());
         }
 
         BuildCodesInternal(node.Left, code.Add(false), codes);
         BuildCodesInternal(node.Right, code.Add(true), codes);
     }
 
-    public static BitArray Encode(string input, IReadOnlyDictionary<char, BitArray> codes)
+    public static BitArray Encode(string input, IReadOnlyDictionary<char, bool[]> codes)
     {
-        var output = new BitArray(0);
+        var output = new List<bool>();
 
         foreach (var symbol in input)
         {
-            output = output.Append(codes[symbol]);
+            output.AddRange(codes[symbol]);
         }
 
-        return output;
+        return new BitArray(output.ToArray());
     }
 
     public static string Decode(BitArray input, Meta meta)
