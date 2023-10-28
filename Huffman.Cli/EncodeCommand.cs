@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Huffman.Cli;
@@ -14,15 +15,15 @@ internal sealed class EncodeCommand : Command<EncodeCommand.Settings>
             throw new Exception($"File '{settings.FilePath}' does not exist");
         }
 
-        var file = new FileInfo(settings.FilePath);
+        var input = new FileInfo(settings.FilePath);
         var text = File.ReadAllText(settings.FilePath);
 
         var tree = HuffmanCoding.BuildTree(text);
         var codes = HuffmanCoding.BuildCodes(tree);
         var encoded = HuffmanCoding.Encode(text, codes);
 
-        var outputFile = new FileInfo(file.Name + ".bin");
-        using (var encodedFile = new FileStream(outputFile.Name, FileMode.Create))
+        var output = new FileInfo(input.Name + ".bin");
+        using (var encodedFile = new FileStream(output.Name, FileMode.Create))
         using (var bitStream = new BitStreamWriter(encodedFile))
         {
             bitStream.Write(encoded);
@@ -30,7 +31,9 @@ internal sealed class EncodeCommand : Command<EncodeCommand.Settings>
 
         var meta = CreateMeta(codes, text);
         var metaJson = JsonSerializer.Serialize(meta);
-        File.WriteAllText($"{outputFile}.meta.json", metaJson);
+        File.WriteAllText($"{output}.meta.json", metaJson);
+
+        WriteInfo(input, output);
 
         return 0;
     }
@@ -50,6 +53,22 @@ internal sealed class EncodeCommand : Command<EncodeCommand.Settings>
 
         var meta = new Meta(metaCodes, text.Length);
         return meta;
+    }
+
+    private static void WriteInfo(FileInfo input, FileInfo output)
+    {
+        var table = new Table
+        {
+            Expand = false
+        };
+
+        table.AddColumns("", "Input", "Output");
+        table.AddRow(new Text("File"), new Text(input.Name), new Text(output.Name));
+        table.AddRow("Size (bytes)", input.Length.ToString(), output.Length.ToString());
+        AnsiConsole.Write(table);
+
+        var ratio = (float)input.Length / output.Length;
+        AnsiConsole.Markup($"[bold]Compression ratio: {ratio:F4} ({ratio * 100:0.##\\%})[/]");
     }
 
     internal sealed class Settings : CommandSettings
