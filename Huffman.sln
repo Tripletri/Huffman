@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huffman", "Huffman\Huffman.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huffman.Tests", "Huffman.Tests\Huffman.Tests.csproj", "{A3492B8F-AC67-462A-8263-949D8305AD4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huffman.Cli", "Huffman.Cli\Huffman.Cli.csproj", "{2E1B0461-9A5E-4445-A759-3CA5A6F8D0E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{A3492B8F-AC67-462A-8263-949D8305AD4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3492B8F-AC67-462A-8263-949D8305AD4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3492B8F-AC67-462A-8263-949D8305AD4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E1B0461-9A5E-4445-A759-3CA5A6F8D0E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E1B0461-9A5E-4445-A759-3CA5A6F8D0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E1B0461-9A5E-4445-A759-3CA5A6F8D0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E1B0461-9A5E-4445-A759-3CA5A6F8D0E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,10 +1,11 @@
+using System.Collections;
 using FluentAssertions;
 
 namespace Huffman.Tests;
 
 internal sealed class HuffmanTests
 {
-    private static IEnumerable<(string Input, Node Tree, Dictionary<char, string> Codes)> GetTestCases()
+    private static IEnumerable<(string Input, Node Tree, Dictionary<char, BitArray> Codes)> GetTestCases()
     {
         var input1 = "AAB";
         var tree1 = new Node("BA")
@@ -14,10 +15,10 @@ internal sealed class HuffmanTests
             Right = new Node("A")
         };
 
-        var codes1 = new Dictionary<char, string>
+        var codes1 = new Dictionary<char, BitArray>
         {
-            ['B'] = "0",
-            ['A'] = "1"
+            ['B'] = new(new[] { false }),
+            ['A'] = new(new[] { true })
         };
 
         yield return (input1, tree1, codes1);
@@ -45,14 +46,14 @@ internal sealed class HuffmanTests
             }
         };
 
-        var codes2 = new Dictionary<char, string>
+        var codes2 = new Dictionary<char, BitArray>
         {
-            ['_'] = "00",
-            ['D'] = "01",
-            ['A'] = "10",
-            ['E'] = "110",
-            ['C'] = "1110",
-            ['B'] = "1111",
+            ['_'] = new(new[] { false, false }),
+            ['D'] = new(new[] { false, true }),
+            ['A'] = new(new[] { true, false }),
+            ['E'] = new(new[] { true, true, false }),
+            ['C'] = new(new[] { true, true, true, false }),
+            ['B'] = new(new[] { true, true, true, true }),
         };
 
         yield return (input2, tree2, codes2);
@@ -61,7 +62,7 @@ internal sealed class HuffmanTests
     [TestCaseSource(nameof(BuildTreeTestCases))]
     public void Should_build_tree(string input, Node root)
     {
-        var actual = Huffman.BuildTree(input);
+        var actual = HuffmanCoding.BuildTree(input);
 
         actual.Should().BeEquivalentTo(root);
     }
@@ -75,9 +76,9 @@ internal sealed class HuffmanTests
     }
 
     [TestCaseSource(nameof(BuildCodesTestCases))]
-    public void Should_build_codes(Node tree, Dictionary<char, string> codes)
+    public void Should_build_codes(Node tree, Dictionary<char, BitArray> codes)
     {
-        var actual = Huffman.BuildCodes(tree);
+        var actual = HuffmanCoding.BuildCodes(tree);
 
         actual.Should().BeEquivalentTo(codes);
     }
